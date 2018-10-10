@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<style>
+
+    *{
+        margin: 0px;
+        padding: 0px;
+    }
+    .container{
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+    h1{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .completed{
+        text-decoration: line-through;
+        color: red;
+    }
+    li{
+        list-style:none;
+    }
+
+</style>
+
+<div class="container">
+
+    <div class="header">
+        <h1>todos</h1>
+        <div class="todo-form">
+            <input id="myInput" class="new-todo" placeholder="What needs to be done?" value="">
+            <button id="btn">ADD</button>
+            <button id="reset">CLEAR</button>
+        </div>
+        <div class="todoList">
+            <ul id="checked">
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+
+
+
+    // $("form").submit(function(e){
+    //     e.preventDefault();   //버튼 눌러도 이동x
+    //     console.log("button clicked.....");
+    //
+    //     var obj = {};   //post방식으로 처리
+    //     obj.uid = $("input[name='uid']").val();
+    //     obj.upw = $("input[name='upw']").val();
+    //     obj.email = $("input[name='email']").val();
+    //
+    //     $.post("http://localhost:8080/jsonEx/join", obj, function (text) {
+    //         alert(text);
+    //     });
+    // });
+
+    $(document).ready(function () {
+
+        var btn = $("#btn");
+        var checked = $("#checked");
+
+        var input = $("input[id='myInput']");
+        var currentIdx = -1;
+        // input.val("CCCCCCCC");
+        // console.log(input.val());
+        // var todoModel = (function () {
+        //     var idx = 0;
+        //     var items = [];
+        //
+        //     function add(text) {
+        //         items.push({idx: idx++, content: text});
+        //         return items;
+        //     }
+        //
+        //     function getList() {
+        //         return items;
+        //     }
+        //
+        //     return {
+        //         add: add,
+        //         getList: getList
+        //     }
+        // })();
+        //
+        // console.log("kk.............");
+        var items = [];
+        btn.on("click", (e) =>{
+            e.preventDefault();
+            e.stopPropagation();
+            console.log("click...........");
+
+            var label = btn.html();
+
+            if(label === 'MODIFY'){
+
+                checked.children().eq(currentIdx).first().html("<input type=\"checkbox\" data-idx= "+items.length+" id=\"check\">"+input.val()+"<br>");
+                items[currentIdx] = input.val();
+                console.log(items);
+                btn.html("ADD");
+            }
+            else if(label === 'DELETE'){
+                checked.children().eq(currentIdx).first().html("");
+                btn.html("ADD");
+            }else{
+            var userInput = input.val();
+
+
+            checked.html(checked.html()+" <li id=\"listLI\" class=''><input type=\"checkbox\" data-idx= "+items.length+" id=\"check\">"+userInput+"<br></li>");
+            items.push(userInput);
+            }
+        });
+        checked.on("click", 'input', function(e){
+
+            e.stopPropagation();
+            currentIdx = $(this).closest("li").index();
+            console.log($(this).index()+"delete..............................................");
+            console.log($(this).html());
+            input.val(items[currentIdx]);
+            btn.html("DELETE");
+
+        });
+        checked.on("click", 'li', function(e){
+
+            currentIdx = $(this).index();
+
+            console.log($(this).html());
+            input.val(items[currentIdx]);
+            btn.html("MODIFY");
+
+        });
+
+        $("#reset").on("click", function(e){
+            checked.html("");
+            items = [];
+        });
+    });
+
+</script>
+
+</body>
+</html>
